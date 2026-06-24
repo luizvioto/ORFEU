@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Substitua os códigos hexadecimais (#ff0055, etc.) pelas cores da sua paleta */
+  --color-brand-primary: #FAA916;   /* Um roxo/azul para botões principais */
+  --color-brand-accent: #96031A; /* Um verde para sucesso/sala de treino */
+  --color-brand-dark: #1B1B1E;      /* O fundo escuro do app */
+  --color-brand-card: #6D676E;      /* O fundo dos cards e menus */
+  --color-brand-light: #FBFFFE;
+}
+
+
+*{
+  font-family: "Montserrat";
+  font-weight: 600;
+}
