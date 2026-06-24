@@ -7,6 +7,8 @@ import {
   Trash,
   Plus,
   Edit2,
+  Check,
+  X,
 } from "lucide-react";
 import Gravador from "../../components/Gravador";
 import ModalCifra from "../../components/ModalCifra";
@@ -53,6 +55,8 @@ export default function Biblioteca() {
   const [cifras, setCifras] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [cifraEmEdicao, setCifraEmEdicao] = useState(null);
+  const [audioEmEdicaoId, setAudioEmEdicaoId] = useState(null);
+  const [tituloAudioEmEdicao, setTituloAudioEmEdicao] = useState("");
 
   useEffect(() => {
     api.get("/cifras")
@@ -99,6 +103,33 @@ export default function Biblioteca() {
   const deletarAudio = (id) => {
     api.delete(`/audios/${id}`)
       .then(() => setListaAudios((prev) => prev.filter((a) => a.id !== id)))
+      .catch((error) => console.error(error));
+  };
+
+  const iniciarEdicaoAudio = (audio) => {
+    setAudioEmEdicaoId(audio.id);
+    setTituloAudioEmEdicao(audio.titulo || "");
+  };
+
+  const cancelarEdicaoAudio = () => {
+    setAudioEmEdicaoId(null);
+    setTituloAudioEmEdicao("");
+  };
+
+  const salvarTituloAudio = (id) => {
+    const titulo = tituloAudioEmEdicao.trim();
+
+    if (!titulo) {
+      return;
+    }
+
+    api.put(`/audios/${id}`, { titulo })
+      .then((response) => {
+        setListaAudios((prev) =>
+          prev.map((audio) => (audio.id === id ? response.data : audio))
+        );
+        cancelarEdicaoAudio();
+      })
       .catch((error) => console.error(error));
   };
 
@@ -194,7 +225,41 @@ export default function Biblioteca() {
           >
             <div className="flex justify-between items-start">
               <div>
-                <h4 className="text-brand-light">{audio.titulo}</h4>
+                {audioEmEdicaoId === audio.id ? (
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="text"
+                      value={tituloAudioEmEdicao}
+                      onChange={(e) => setTituloAudioEmEdicao(e.target.value)}
+                      className="border border-brand-card bg-brand-card/10 text-brand-light px-2 py-1 rounded-lg"
+                    />
+                    <button
+                      onClick={() => salvarTituloAudio(audio.id)}
+                      title="Salvar título"
+                      className="text-brand-card hover:text-brand-primary p-1 cursor-pointer"
+                    >
+                      <Check size={16} />
+                    </button>
+                    <button
+                      onClick={cancelarEdicaoAudio}
+                      title="Cancelar edição"
+                      className="text-brand-card hover:text-red-400 p-1 cursor-pointer"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <h4 className="text-brand-light">{audio.titulo}</h4>
+                    <button
+                      onClick={() => iniciarEdicaoAudio(audio)}
+                      title="Editar título"
+                      className="text-brand-card hover:text-brand-primary p-1 cursor-pointer"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                  </div>
+                )}
                 <p className="text-brand-card">
                   {audio.createdAt
                     ? new Date(audio.createdAt).toLocaleDateString("pt-BR", {

@@ -55,4 +55,31 @@ async function deletarAudio(request, response) {
   }
 }
 
-export default { listarAudios, salvarAudio, deletarAudio };
+async function atualizarTituloAudio(request, response) {
+  try {
+    const idDoAluno = request.usuarioLogado.sub;
+    const { id } = request.params;
+    const { titulo } = request.body;
+
+    const audio = await Audio.findOne({ where: { id: id, userId: idDoAluno } });
+
+    if (!audio) {
+      return response.status(404).send({ mensagem: "Áudio não encontrado." });
+    }
+
+    const tituloNormalizado = (titulo || "").trim();
+
+    if (!tituloNormalizado) {
+      return response.status(400).send({ mensagem: "Título é obrigatório." });
+    }
+
+    audio.titulo = tituloNormalizado;
+    await audio.save();
+
+    response.send(audio);
+  } catch (error) {
+    response.status(500).send({ mensagem: "Erro ao atualizar o título do áudio.", erro: error.message });
+  }
+}
+
+export default { listarAudios, salvarAudio, deletarAudio, atualizarTituloAudio };

@@ -22,7 +22,7 @@ function App() {
     );
     const [menuAberto, setMenuAberto] = useState(false);
 
-    const [minutosPraticados, setMinutosPraticados] = useState(90);
+    const [minutosPraticados, setMinutosPraticados] = useState(0);
 
     const handleTimerExpire = () => {
         setMinutosPraticados((minutosAtuais) => minutosAtuais + 30);

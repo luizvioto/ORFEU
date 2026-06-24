@@ -26,6 +26,7 @@ router.delete("/cifras/:id", cifraController.deleteCifra);
 
 router.get("/audios", audioController.listarAudios);
 router.post("/audios", upload.single('audio'), audioController.salvarAudio);
+router.put("/audios/:id", audioController.atualizarTituloAudio);
 router.delete("/audios/:id", audioController.deletarAudio);
 
 export default router;
